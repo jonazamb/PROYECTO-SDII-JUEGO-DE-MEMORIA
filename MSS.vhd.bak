@@ -1,0 +1,102 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity MSS is
+	port(Clock, Resetn, Start, Consulta_puntuacion, Consulta_mejor, Empezar, Pedir_numero, Siguiente, 
+	     Igual, Limite_Aciertos, Jugador_Mejoro, Actualizar_mejor_puntuacion, Aumentar_f: in std_logic;
+		  En_Max_Vuelta, Ld_Max_VUelta, En_Reloj, Ld_Reloj, En_Dir, Ld_Dir, En_Secuencia, 
+		  S0, D0, D1, D2, En_display, RorW_Numn, En_Rondas, Ld_Rondas, En_Aciertos, RorW_Aciertos, En_Mejor: out std_logic);
+end MSS;
+
+architecture Controlador of MSS is 
+type estado is (Ta,Tb,Tc,Td,Te,Tf,Tg,Th,Ti,Tj,Tk,Tl,Tm,Tn,Too,Tp,Tq,Tr,Ts,Tu,Tv,Tw,Tx,Ty,Tz
+					 Taa,Tab,Tac,Tad,Tae,Taf,Tag,Tah,Tai);
+signal y: estado;
+begin
+	process(Clock, Resetn)
+	begin
+		if Resetn='0' then y<=Ta;
+		elsif (Clock' event and Clock='1') then
+			case y is
+				when Ta=> if Start='1' then y<= Tb; else y<= Ta; end if;
+				when Tb=> if Start='0' then y<= Tc; else y<= Tb; end if;
+				when Tc=> if Consulta_puntuacion='1' then y<= Tah; else y<= Td; end if;
+				when Td=> if Consulta_mejor='1' then y<= Taf; else y<= Te; end if;
+				when Te=> if Empezar='1' then y<= Tf; else y<= Tc; end if;
+				when Tf=> if Empezar='0' then y<= Tg; else y<= Tf; end if; 
+				when Tg=> y<= Th;
+				when Th=> if Pedir_numero='1' then y<= Ti; else y<= Ts; end if;
+				when Ti=> y<= Tj; 
+				when Tj=> if Pedir_numero='1' then y<= Tk; else y<= Tv; end if;
+				when Tk=> y<= Tl;
+				when Tl=> if Pedir_numero='1' then y<= Tx; else y<= Tm; end if; 
+				when Tm=> if Siguiente='1' then y<= Tn; else y<= Tm; end if;
+				when Tn=> if Siguiente='0' then y<= Too; else y<= Tn; end if;
+				when Too=> y<= Tp;
+				when Tp=> if Igual='1' then y<= Tu; else y<= Tq; end if;
+				when Tq=> y<= Tr;
+				when Tr=> y<= Tc;
+				when Ts=> y<= Tt;
+				when Tt=> y<= Th;
+				when Tu=> y<= Tl;
+				when Tv=> y<= Tw;
+				when Tw=> y<= Tj;
+				when Tx=> if Limite_Aciertos='1' then y<= Tq; else y<= Ty; end if;
+				when Ty=> if Jugador_Mejoro='1' then y<= Tz; else y<= Taa; end if;
+				when Tz=> y<= Taa;
+				when Taa=> if Actualizar_mejor_puntuacion='1' then y<= Tab; else y<= Tac; end if;
+				when Tab=> y<= Tac;
+				when Tac=> if Aumentar_f='1' then y<= Tad; else y<= Tae; end if;
+				when Tad=> y<= Th;
+				when Tae=> y<= Th;
+				when Taf=> if Consulta_mejor='0' then y<= Tag; else y<= Taf; end if;
+				when Tag=> y<= Tc;
+				when Tah=> if Consulta_puntuacion='0' then y<= Tai; else y<= Tah; end if;
+				when Tai=> y<= Tc;
+			end case;
+		end if;
+	end process;
+	
+	process(y)
+	begin
+	En_Max_Vuelta<= '0'; Ld_Max_VUelta<= '0'; En_Reloj<= '0'; Ld_Reloj<= '0'; En_Dir<= '0'; Ld_Dir<= '0'; En_Secuencia<= '0'; 
+	S0<= '0'; D0<= '0'; D1<= '0'; D2<= '0'; En_display<= '0'; RorW_Numn<= '0'; En_Rondas<= '0'; Ld_Rondas<= '0'; En_Aciertos<= '0'; 
+	RorW_Aciertos<= '0'; En_Mejor<= '0';
+		case y is
+			when Ta=>
+			when Tb=>
+			when Tc=>
+			when Td=>
+			when Te=> 
+			when Tf=> 
+			when Tg=> En_Max_Vuelta<= '1'; Ld_Max_VUelta<= '1'; En_Reloj<= '1'; Ld_Reloj<= '1'; En_Dir<= '1'; Ld_Dir<= '1'; 
+			when Th=> 
+			when Ti=> En_Dir<= '1'; Ld_Dir<= '1'; 
+			when Tj=> 
+			when Tk=> En_Dir<= '1'; Ld_Dir<= '1';
+			when Tl=>
+			when Tm=>
+			when Tn=>
+			when Too=> En_Secuencia<= '1';
+			when Tp=> S0<= '1'; D0<= '1'; En_display<= '1';
+			when Tq=> En_Reloj<= '1';  Ld_Reloj<= '1'; 
+			when Tr=> S0<= '1'; D1<= '1'; En_display<= '1';
+			when Ts=> RorW_Num<= '1';
+			when Tt=> En_Dir<= '1'; 
+			when Tu=> En_Dir<= '1';
+			when Tv=> S0<= '1'; En_display<= '1';
+			when Tw=> En_Dir<= '1';
+			when Tx=> En_Rondas<= '1';
+			when Ty=> En_Aciertos<= '1';
+			when Tz=> RorW_Aciertos<= '1';
+			when Taa=>
+			when Tab=> En_Mejor<= '1';
+			when Tac=>
+			when Tad=> En_Reloj<= '1'; En_Dir<= '1'; Ld_Dir<= '1'; En_Rondas<= '1'; Ld_Rondas<= '1';
+			when Tae=> En_Dir<= '1'; Ld_Dir<= '1';
+			when Taf=> 
+			when Tag=> En_Reloj<= '1';  Ld_Reloj<= '1'; D2<= '1'; En_display<= '1';
+			when Tah=> 
+			when Tai=> En_Reloj<= '1';  Ld_Reloj<= '1'; D1<= '1'; D0<= '1'; En_display<= '1'; 
+		end case;
+	end process;
+end Controlador;
